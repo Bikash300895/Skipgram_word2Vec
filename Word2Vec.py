@@ -51,4 +51,43 @@ for word in int_words:
 print(len(train_words))
 
 
+# Making batches
+# function to give context words with window size and center word index given
+def get_target(words, idx, window_size=5):
+    ''' Get a list of words in a window around an index. '''
+    
+    # we will not take exact window size word, rather take a number less than that
+    random_count = randint(1,window_size) #the R number described in the description
+    
+    if idx - random_count < 0:
+        start_word = 0
+    else:
+        start_word = idx - random_count
+        
+    if idx + random_count > len(words) - 1:
+        end_word = len(words)  
+    else:
+        end_word = idx + random_count + 1
+ 
+    return list(set(words[start_word:idx]+words[idx+1:end_word]))
 
+# print(get_target([0,1,2,3,4,5,6,7,8,9],4,3)) #returns a list of the words around the given index
+    
+
+def get_batches(words, batch_size, window_size=5):
+    ''' Create a generator of word batches as a tuple (inputs, targets) '''
+    
+    n_batches = len(words)//batch_size
+    
+    # only full batches
+    words = words[:n_batches*batch_size]
+    
+    for idx in range(0, len(words), batch_size):
+        x, y = [], []
+        batch = words[idx:idx+batch_size]
+        for ii in range(len(batch)):
+            batch_x = batch[ii]
+            batch_y = get_target(batch, ii, window_size)
+            y.extend(batch_y)
+            x.extend([batch_x]*len(batch_y))
+        yield x, y
