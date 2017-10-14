@@ -204,7 +204,18 @@ with tf.Session(graph=train_graph) as sess:
 %config InlineBackend.figure_format = 'retina'
 
 import matplotlib.pyplot as plt
-from sklearn.manifold import TSNE    
+from sklearn.manifold import TSNE 
+
+
+viz_words = 500
+tsne = TSNE()
+embed_tsne = tsne.fit_transform(embed_mat[:viz_words, :])   
+
+
+fig, ax = plt.subplots(figsize=(14, 14))
+for idx in range(viz_words):
+    plt.scatter(*embed_tsne[idx, :], color='steelblue')
+    plt.annotate(int_to_vocab[idx], (embed_tsne[idx, 0], embed_tsne[idx, 1]), alpha=0.7)
     
     
     
