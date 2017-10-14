@@ -193,3 +193,19 @@ with tf.Session(graph=train_graph) as sess:
     embed_mat = sess.run(normalized_embedding)
 
 
+with train_graph.as_default():
+    saver = tf.train.Saver()
+
+with tf.Session(graph=train_graph) as sess:
+    saver.restore(sess, tf.train.latest_checkpoint('checkpoints'))
+    embed_mat = sess.run(embedding)
+    
+
+%config InlineBackend.figure_format = 'retina'
+
+import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE    
+    
+    
+    
+    
